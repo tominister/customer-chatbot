@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+  web:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - FLASK_SECRET_KEY=dev-secret
+      - MODEL_STORAGE_URL=
+    volumes:
+      - ./:/app  # dev only; remove in production
+      - ./model/:/app/model/  # mount local model for dev

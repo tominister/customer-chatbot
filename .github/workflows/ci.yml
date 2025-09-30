@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Static import checks
+        run: |
+          python -c "import importlib,sys; importlib.invalidate_caches(); importlib.import_module('app'); print('app import OK')"
+          python -c "import importlib; importlib.invalidate_caches(); importlib.import_module('train.train'); print('train.train import OK')"
