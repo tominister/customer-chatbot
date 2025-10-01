@@ -8,15 +8,15 @@ WORKDIR /app
 
 # Install system deps if needed (adjust if you don't need build tools)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    gcc \
     curl \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy only requirements first for caching
 COPY requirements.txt .
 RUN python -m pip install --upgrade pip
-RUN pip install -r requirements.txt
+# Use --no-cache-dir to avoid pip cache in image layers and reduce final size
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code (model/ is excluded by .dockerignore)
 COPY . .
